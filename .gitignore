@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+/.vs/OpenGL Test/FileContentIndex
+/.vs/OpenGL Test/v17/ipch/AutoPCH
+/.vs/OpenGL Test/v17
+/.vs
+/OpenGL Test/x64/Debug
+*.filters
+*.user
+/x64/Debug
+/OpenGL Test/Dependencies/GLEW/include/GL/wglew.h
+/OpenGL Test/Dependencies/GLEW/include/GL/glxew.h
+/OpenGL Test/Dependencies/GLEW/include/GL/glew.h
+/OpenGL Test/Dependencies/GLEW/include/GL/eglew.h
