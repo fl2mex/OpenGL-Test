@@ -38,3 +38,34 @@
 *.filters
 *.user
 /x64/Debug
+/OpenGL Test/src/vendor/GLM/detail
+/OpenGL Test/src/vendor/GLM/ext
+/OpenGL Test/src/vendor/GLM/vector_relational.hpp
+/OpenGL Test/src/vendor/GLM/vec4.hpp
+/OpenGL Test/src/vendor/GLM/vec3.hpp
+/OpenGL Test/src/vendor/GLM/vec2.hpp
+/OpenGL Test/src/vendor/GLM/trigonometric.hpp
+/OpenGL Test/src/vendor/GLM/packing.hpp
+/OpenGL Test/src/vendor/GLM/matrix.hpp
+/OpenGL Test/src/vendor/GLM/mat4x4.hpp
+/OpenGL Test/src/vendor/GLM/mat4x3.hpp
+/OpenGL Test/src/vendor/GLM/mat4x2.hpp
+/OpenGL Test/src/vendor/GLM/mat3x4.hpp
+/OpenGL Test/src/vendor/GLM/mat3x3.hpp
+/OpenGL Test/src/vendor/GLM/mat3x2.hpp
+/OpenGL Test/src/vendor/GLM/mat2x4.hpp
+/OpenGL Test/src/vendor/GLM/mat2x3.hpp
+/OpenGL Test/src/vendor/GLM/mat2x2.hpp
+/OpenGL Test/src/vendor/GLM/integer.hpp
+/OpenGL Test/src/vendor/GLM/glm.hpp
+/OpenGL Test/src/vendor/GLM/geometric.hpp
+/OpenGL Test/src/vendor/GLM/fwd.hpp
+/OpenGL Test/src/vendor/GLM/ext.hpp
+/OpenGL Test/src/vendor/GLM/exponential.hpp
+/OpenGL Test/src/vendor/GLM/common.hpp
+/OpenGL Test/src/vendor/GLM/CMakeLists.txt
+/OpenGL Test/src/vendor/GLM/simd
+/OpenGL Test/src/vendor/GLM/gtx
+/OpenGL Test/src/vendor/GLM/gtc
+/OpenGL Test/src/vendor/stb_image/stb_image.h
+/OpenGL Test/src/vendor/stb_image/stb_image.cpp
