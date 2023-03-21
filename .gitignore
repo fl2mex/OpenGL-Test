@@ -38,7 +38,3 @@
 *.filters
 *.user
 /x64/Debug
-/OpenGL Test/Dependencies/GLEW/include/GL/wglew.h
-/OpenGL Test/Dependencies/GLEW/include/GL/glxew.h
-/OpenGL Test/Dependencies/GLEW/include/GL/glew.h
-/OpenGL Test/Dependencies/GLEW/include/GL/eglew.h
