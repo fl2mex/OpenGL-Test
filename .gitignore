@@ -69,3 +69,9 @@
 /OpenGL Test/src/vendor/GLM/gtc
 /OpenGL Test/src/vendor/stb_image/stb_image.h
 /OpenGL Test/src/vendor/stb_image/stb_image.cpp
+/OpenGL Test/Dependencies/GLFW/include/GLFW/glfw3native.h
+/OpenGL Test/Dependencies/GLFW/include/GLFW/glfw3.h
+/OpenGL Test/Dependencies/GLEW/include/GL/wglew.h
+/OpenGL Test/Dependencies/GLEW/include/GL/glxew.h
+/OpenGL Test/Dependencies/GLEW/include/GL/glew.h
+/OpenGL Test/Dependencies/GLEW/include/GL/eglew.h
