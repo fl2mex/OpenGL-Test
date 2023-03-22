@@ -153,7 +153,6 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\GLM\detail\glm.cpp" />
-    <ClCompile Include="src\vendor\ImGui\example.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui_demo.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui_draw.cpp" />

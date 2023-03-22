@@ -49,13 +49,11 @@ int main(void)
         std::cout << glGetString(GL_VERSION) << std::endl;
 
 
-
     // Scope bug fix for persistent terminal
     {
         // Enable Alpha Blending
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
 
 
         float positions[] = 
@@ -85,7 +83,7 @@ int main(void)
 
         // Projection Matrix
         glm::mat4 proj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100,0,0));
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0));
 
         glm::vec3 translation = glm::vec3(0, 0, 0);
 
@@ -93,7 +91,6 @@ int main(void)
         // Shaders
         Shader shader("res/shaders/Tex.shader");
         shader.Bind();
-        shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.2f, 1.0f);
 
         // Textures
         Texture texture("res/textures/kitty.png");
@@ -136,10 +133,9 @@ int main(void)
             renderer.Draw(va, ib, shader);
             
 
-         
             // ImGui Test
             {
-                ImGui::SliderFloat("Translation X", &translation.x, 100.0f, 1380.0f);
+                ImGui::SliderFloat("Translation X", &translation.x, 0.0f, 1380.0f);
                 ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, 540.0f);
                 ImGui::SliderFloat("Translation Z", &translation.z, -1.001f, 1.001f);
 
@@ -150,8 +146,7 @@ int main(void)
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
-
+            
             // Swap Buffers and Poll Events
             glfwSwapBuffers(window);
             glfwPollEvents();
