@@ -93,3 +93,4 @@
 /OpenGL Test/src/vendor/ImGui/imconfig.h
 /OpenGL Test/src/vendor/ImGui/example.cpp
 /OpenGL Test/x64/Release
+/OpenGL Test/imgui.ini
