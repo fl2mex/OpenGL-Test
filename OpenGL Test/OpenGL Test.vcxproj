@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\vendor\GLM\detail\glm.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui_demo.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Dependencies\GLEW\include\GL\wglew.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\vendor\GLM\common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_vector_relational.hpp" />
@@ -465,6 +467,8 @@
     <Library Include="Dependencies\GLFW\lib-vc2022\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shader\fragment.glsl" />
+    <None Include="res\shader\vertex.glsl" />
     <None Include="src\vendor\GLM\detail\func_common.inl" />
     <None Include="src\vendor\GLM\detail\func_common_simd.inl" />
     <None Include="src\vendor\GLM\detail\func_exponential.inl" />

@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "Shader.h"
+
 // ImGui
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_glfw.h"
@@ -27,31 +29,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         std::cout << "Wireframe Toggled" << std::endl;
     }
 }
-
-const char* vertexShaderSource = R"glsl(
-#version 330 core
-layout (location = 0) in vec3 aPos;   // the position variable has attribute position 0
-layout (location = 1) in vec3 aColor; // the color variable has attribute position 1
-  
-out vec3 ourColor; // output a color to the fragment shader
-
-void main()
-{
-    gl_Position = vec4(aPos, 1.0);
-    ourColor = aColor; // set ourColor to the input color we got from the vertex data
-}  
-)glsl";
-
-const char* fragmentShaderSource = R"glsl(
-#version 330 core
-out vec4 FragColor;  
-in vec3 ourColor;
-  
-void main()
-{
-    FragColor = vec4(ourColor, 1.0);
-}
-)glsl";
 
 int main(void)
 {
@@ -87,46 +64,8 @@ int main(void)
         return -1;
     }
     std::cout << glGetString(GL_VERSION) << std::endl;
-    int success; char infoLog[512];
-    
-    // Vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
 
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    // Fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    // Link shaders
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shader("res/shader/vertex.glsl", "res/shader/fragment.glsl");
 
     float vertices[] = {
      // Positions           Colors
@@ -134,7 +73,6 @@ int main(void)
        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // Bottom left
         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // Top
     };
-
     unsigned int indices[] = {
         0, 1, 2,  // First triangle
     };
@@ -158,6 +96,7 @@ int main(void)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -180,19 +119,14 @@ int main(void)
         else
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-
         // ImGui New Frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
 
-        glUseProgram(shaderProgram);
+        shader.Bind();
 
-        float timeValue = glfwGetTime();
-        float greenValue = sin(timeValue) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -205,7 +139,6 @@ int main(void)
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
         // Swap Buffers and Poll Events
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -214,7 +147,6 @@ int main(void)
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
         glDeleteBuffers(1, &IBO);
-        glDeleteProgram(shaderProgram);
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
