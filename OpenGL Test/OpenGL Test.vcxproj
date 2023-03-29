@@ -610,6 +610,10 @@
     <None Include="src\vendor\GLM\gtx\vector_query.inl" />
     <None Include="src\vendor\GLM\gtx\wrap.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\texture\dreamed.jpg" />
+    <Image Include="res\texture\kitty.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
