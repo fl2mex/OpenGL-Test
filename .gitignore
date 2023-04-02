@@ -95,3 +95,6 @@
 /OpenGL Test/x64/Release
 /OpenGL Test/imgui.ini
 /x64/Release
+/OpenGL Test/src/vendor/ImGui/imgui_stdlib.h
+/OpenGL Test/src/vendor/ImGui/imgui_stdlib.cpp
+/x64
