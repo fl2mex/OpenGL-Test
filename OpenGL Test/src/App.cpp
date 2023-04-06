@@ -4,6 +4,7 @@
 
 #include "Shader.h" // Shader Abstraction
 #include "Texture.h" // Texture Abstraction
+#include "Camera.h" // Camera Abstraction
 
 #include "GLM/glm.hpp" // GLM
 #include "glm/gtc/matrix_transform.hpp"
@@ -19,14 +20,12 @@ const unsigned int screenWidth = 1920;
 const unsigned int screenHeight = 1080;
 bool isWireframe = false;
 
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 bool firstMouse = true;
-float yaw = -90.0f;
-float pitch = 0.0f;
 float lastX = screenWidth / 2.0;
 float lastY = screenHeight / 2.0;
-float fov = 45.0f;
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -50,35 +49,15 @@ void mouseCallback(GLFWwindow* window, double xposIn, double yposIn)
 
     float xoffset = xpos - lastX;
     float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
     lastX = xpos;
     lastY = ypos;
 
-    float sensitivity = 0.1f; // change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw += xoffset;
-    pitch += yoffset;
-
-    // make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 front = glm::vec3(0.0f);
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(front);
+    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+    camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -92,15 +71,15 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         isWireframe = !isWireframe;
         std::cout << "Wireframe Toggled" << std::endl;
     }
-    float cameraSpeed = static_cast<float>(2.5 * deltaTime);
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
+        camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 int main(void)
@@ -137,9 +116,6 @@ int main(void)
         std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
-
-    // Load Shaders
-    Shader shader("res/shader/vertex.glsl", "res/shader/fragment.glsl");
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -224,18 +200,19 @@ int main(void)
     ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     ImGui::StyleColorsDark();
 
+    // Load Shaders
+    Shader shader("res/shader/vertex.glsl", "res/shader/fragment.glsl");
+
     // Load Textures
     stbi_set_flip_vertically_on_load(1);
     Texture texture1("res/texture/dreamed.jpg");
     Texture texture2("res/texture/kitty.png");
     texture1.Bind(0);
     texture2.Bind(1);
-
     shader.Bind();
     shader.SetUniform1i("texture1", 0);
     shader.SetUniform1i("texture2", 1);
 
-    float maxfps = 0;
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -255,17 +232,9 @@ int main(void)
 
         shader.Bind();
 
-        glm::mat4 projection = glm::perspective(glm::radians(fov), (float)screenWidth / screenHeight, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / screenHeight, 0.1f, 100.0f);
         shader.SetUniformMat4f("projection", projection);
-
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        shader.SetUniformMat4f("view", view);
-
-        glm::vec3 direction = glm::vec3(0.0f);
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
+        glm::mat4 view = camera.GetViewMatrix();
         shader.SetUniformMat4f("view", view);
         
         glBindVertexArray(VAO);
@@ -283,9 +252,7 @@ int main(void)
         }
 
         // ImGui Test
-        maxfps = (ImGui::GetIO().Framerate > maxfps) ? ImGui::GetIO().Framerate : maxfps;
         ImGui::Text("(%.1f FPS)", ImGui::GetIO().Framerate);
-        ImGui::Text("(%.1f Max FPS)", maxfps);
 
         // ImGui Render
         ImGui::Render();
