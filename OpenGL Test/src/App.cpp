@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Shader.h" // Shader Abstraction
+#include "Texture.h" // Texture Abstraction
 
 #include "GLM/glm.hpp" // GLM
 #include "glm/gtc/matrix_transform.hpp"
@@ -35,7 +36,7 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+void mouseCallback(GLFWwindow* window, double xposIn, double yposIn)
 {
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
@@ -71,7 +72,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(front);
 }
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     fov -= (float)yoffset;
     if (fov < 1.0f)
@@ -114,8 +115,6 @@ int main(void)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
     }
-
-    // Create window, 1920x1080
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "App", NULL, NULL);
     if (!window)
     {
@@ -125,24 +124,21 @@ int main(void)
     }
 
     glfwMakeContextCurrent(window);
-
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback); // Viewport Updates
     glfwSetKeyCallback(window, keyCallback); // Key Callback
     glfwSwapInterval(1); // Enable VSync
     glEnable(GL_DEPTH_TEST); // Enable Z-Buffer
-
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-
-    // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
+    glfwSetCursorPosCallback(window, mouseCallback); // Mouse Callback
+    glfwSetScrollCallback(window, scrollCallback); // Mouse Scroll Callback
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide Cursor
+    
     /* Initialize GLEW */ if (glewInit())
     {
-        std::cout << "Error!" << std::endl;
+        std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
 
+    // Load Shaders
     Shader shader("res/shader/vertex.glsl", "res/shader/fragment.glsl");
 
     float vertices[] = {
@@ -201,8 +197,7 @@ int main(void)
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-    unsigned int VBO, VAO;
-    // TEMP: unsigned int IBO;
+    unsigned int VBO, VAO; // TEMP: IBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     // TEMP: glGenBuffers(1, &IBO);
@@ -228,47 +223,13 @@ int main(void)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     ImGui::StyleColorsDark();
-    
-    // TODO: Abstract to Texture Class
-    unsigned int texture1, texture2;
-    int width, height, nrChannels;
 
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load("res/texture/kitty.png", &width, &height, &nrChannels, STBI_rgb_alpha);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_set_flip_vertically_on_load(true);
-    data = stbi_load("res/texture/dreamed.jpg", &width, &height, &nrChannels, STBI_rgb_alpha);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    // Load Textures
+    stbi_set_flip_vertically_on_load(1);
+    Texture texture1("res/texture/dreamed.jpg");
+    Texture texture2("res/texture/kitty.png");
+    texture1.Bind(0);
+    texture2.Bind(1);
 
     shader.Bind();
     shader.SetUniform1i("texture1", 0);
@@ -280,8 +241,7 @@ int main(void)
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
-
+        
         // Render
         glClearColor(0.2f, 0.3f, 0.8f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -292,11 +252,6 @@ int main(void)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
 
         shader.Bind();
 
@@ -311,11 +266,8 @@ int main(void)
         direction.y = sin(glm::radians(pitch));
         direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
-
-        // TEMP: glm::mat4 view = glm::mat4(1.0f);
-        // TEMP: view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
         shader.SetUniformMat4f("view", view);
-
+        
         glBindVertexArray(VAO);
         for (unsigned int i = 0; i < 10; i++)
         {
@@ -329,7 +281,6 @@ int main(void)
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-
 
         // ImGui Test
         maxfps = (ImGui::GetIO().Framerate > maxfps) ? ImGui::GetIO().Framerate : maxfps;

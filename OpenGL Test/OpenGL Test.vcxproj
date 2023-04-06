@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\GLM\detail\glm.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui_demo.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\vendor\GLM\common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_vector_relational.hpp" />
