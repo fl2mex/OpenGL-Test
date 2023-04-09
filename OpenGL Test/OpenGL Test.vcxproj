@@ -86,6 +86,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +105,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +143,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -475,6 +479,8 @@
     <Library Include="Dependencies\GLFW\lib-vc2022\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shader\cubefragment.glsl" />
+    <None Include="res\shader\cubevertex.glsl" />
     <None Include="res\shader\fragment.glsl" />
     <None Include="res\shader\vertex.glsl" />
     <None Include="src\vendor\GLM\detail\func_common.inl" />

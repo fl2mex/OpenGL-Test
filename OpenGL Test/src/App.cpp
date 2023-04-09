@@ -16,20 +16,23 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h" // stb_image
 
+// Screen
 const unsigned int screenWidth = 1920;
 const unsigned int screenHeight = 1080;
 bool isWireframe = false;
 
+// Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = screenWidth / 2.0f;
+float lastY = screenHeight / 2.0f;
+bool firstMouse = true;
+
+// Timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-bool firstMouse = true;
-float lastX = screenWidth / 2.0;
-float lastY = screenHeight / 2.0;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+// Lighting
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -95,104 +98,94 @@ int main(void)
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
     }
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "App", NULL, NULL);
-    if (!window)
+    /* Check if window created */ if (!window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
-
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback); // Viewport Updates
-    glfwSetKeyCallback(window, keyCallback); // Key Callback
-    glfwSwapInterval(1); // Enable VSync
-    glEnable(GL_DEPTH_TEST); // Enable Z-Buffer
-    glfwSetCursorPosCallback(window, mouseCallback); // Mouse Callback
-    glfwSetScrollCallback(window, scrollCallback); // Mouse Scroll Callback
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide Cursor
-    
+    /* GLFW Settings */{
+        glfwMakeContextCurrent(window);
+        glfwSetFramebufferSizeCallback(window, framebufferSizeCallback); // Viewport Updates
+        glfwSetKeyCallback(window, keyCallback); // Key Callback
+        glfwSwapInterval(1); // Enable VSync
+        glEnable(GL_DEPTH_TEST); // Enable Z-Buffer
+        glfwSetCursorPosCallback(window, mouseCallback); // Mouse Callback
+        glfwSetScrollCallback(window, scrollCallback); // Mouse Scroll Callback
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide Cursor
+    }
     /* Initialize GLEW */ if (glewInit())
     {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
-
+    
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  0.0f),
-        glm::vec3(2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f,  2.0f, -2.5f),
-        glm::vec3(1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                                                 
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+                                                 
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+                                                 
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+                                                 
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+                                                 
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
 
-    unsigned int VBO, VAO; // TEMP: IBO;
-    glGenVertexArrays(1, &VAO);
+    unsigned int VBO, cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
-    // TEMP: glGenBuffers(1, &IBO);
-    glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // TEMP: glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    // TEMP: glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindVertexArray(cubeVAO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
 
     // Initialize ImGui
     ImGui::CreateContext();
@@ -200,56 +193,63 @@ int main(void)
     ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     ImGui::StyleColorsDark();
 
-    // Load Shaders
-    Shader shader("res/shader/vertex.glsl", "res/shader/fragment.glsl");
-
-    // Load Textures
-    stbi_set_flip_vertically_on_load(1);
-    Texture texture1("res/texture/dreamed.jpg");
-    Texture texture2("res/texture/kitty.png");
-    texture1.Bind(0);
-    texture2.Bind(1);
-    shader.Bind();
-    shader.SetUniform1i("texture1", 0);
-    shader.SetUniform1i("texture2", 1);
+    Shader lightingShader("res/shader/vertex.glsl", "res/shader/fragment.glsl");
+    Shader lightCubeShader("res/shader/cubevertex.glsl", "res/shader/cubefragment.glsl");
 
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        
-        // Render
-        glClearColor(0.2f, 0.3f, 0.8f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Render
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glPolygonMode(GL_FRONT_AND_BACK, isWireframe ? GL_LINE : GL_FILL);
 
         // ImGui New Frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        shader.Bind();
-
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / screenHeight, 0.1f, 100.0f);
-        shader.SetUniformMat4f("projection", projection);
-        glm::mat4 view = camera.GetViewMatrix();
-        shader.SetUniformMat4f("view", view);
         
-        glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            angle = glfwGetTime() * 25.0f;
+        lightingShader.Bind();
+        lightingShader.SetUniformVec3f("light.position", lightPos);
+        lightingShader.SetUniformVec3f("viewPos", camera.Position);
+        
+        glm::vec3 lightColor(1.0f);
+        lightColor.x = static_cast<float>(sin(glfwGetTime() * 2));
+        lightColor.y = static_cast<float>(sin(glfwGetTime() * 5));
+        lightColor.z = static_cast<float>(sin(glfwGetTime() * 8));
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); 
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
 
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            shader.SetUniformMat4f("model", model);
+        lightingShader.SetUniformVec3f("light.ambient", ambientColor);
+        lightingShader.SetUniformVec3f("light.diffuse", diffuseColor);
+        lightingShader.SetUniformVec3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        lightingShader.SetUniformVec3f("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+        lightingShader.SetUniformVec3f("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+        lightingShader.SetUniformVec3f("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+        lightingShader.SetUniform1f("material.shininess", 32.0f);
+
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        lightingShader.SetUniformMat4f("projection", projection);
+        lightingShader.SetUniformMat4f("view", view);
+        glm::mat4 model = glm::mat4(1.0f);
+        lightingShader.SetUniformMat4f("model", model);
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        lightCubeShader.Bind();
+        lightCubeShader.SetUniformMat4f("projection", projection);
+        lightCubeShader.SetUniformMat4f("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        lightCubeShader.SetUniformMat4f("model", model);
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // ImGui Test
         ImGui::Text("(%.1f FPS)", ImGui::GetIO().Framerate);
@@ -262,13 +262,15 @@ int main(void)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    {
-        glDeleteVertexArrays(1, &VAO);
+    /* Cleanup */{
+        glDeleteVertexArrays(1, &cubeVAO);
+        glDeleteVertexArrays(1, &lightCubeVAO);
         glDeleteBuffers(1, &VBO);
-        // TEMP: glDeleteBuffers(1, &IBO);
+
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
+
         glfwTerminate();
         return 0; 
     }

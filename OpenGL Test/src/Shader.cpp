@@ -26,7 +26,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     
     m_ID = CreateShader(vShaderCode, fShaderCode);
 }
-
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
     unsigned int id = glCreateShader(type);
@@ -36,7 +35,6 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 
     return id;
 }
-
 unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
     unsigned int program = glCreateProgram();
@@ -61,6 +59,14 @@ void Shader::SetUniform1i(const std::string& name, int value)
 void Shader::SetUniform1f(const std::string& name, float value)
 {
     glUniform1f(GetUniformLocation(name), value);
+}
+void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
+{
+    glUniform3f(GetUniformLocation(name), v0, v1, v2);
+}
+void Shader::SetUniformVec3f(const std::string& name, const glm::vec3 value)
+{
+    glUniform3fv(GetUniformLocation(name), 1, &value[0]);
 }
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
