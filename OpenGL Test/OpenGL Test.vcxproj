@@ -85,7 +85,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include;$(SolutionDir)OpenGL Test\Dependencies\assimp\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -104,7 +104,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include;$(SolutionDir)OpenGL Test\Dependencies\assimp\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -123,7 +123,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include;$(SolutionDir)OpenGL Test\Dependencies\assimp\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)OpenGL Test\Dependencies\GLFW\include;$(SolutionDir)OpenGL Test\Dependencies\GLEW\include;$(SolutionDir)OpenGL Test\Dependencies\assimp\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <DisableSpecificWarnings>4083; 26451</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -158,7 +158,6 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\GLM\detail\glm.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui_demo.cpp" />
@@ -249,6 +248,7 @@
     <ClInclude Include="Dependencies\assimp\include\assimp\texture.h" />
     <ClInclude Include="Dependencies\assimp\include\assimp\TinyFormatter.h" />
     <ClInclude Include="Dependencies\assimp\include\assimp\types.h" />
+    <ClInclude Include="Dependencies\assimp\include\assimp\utf8.h" />
     <ClInclude Include="Dependencies\assimp\include\assimp\vector2.h" />
     <ClInclude Include="Dependencies\assimp\include\assimp\vector3.h" />
     <ClInclude Include="Dependencies\assimp\include\assimp\version.h" />
@@ -342,8 +342,9 @@
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\vendor\GLM\common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_vector_relational.hpp" />
