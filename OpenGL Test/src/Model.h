@@ -1,10 +1,9 @@
+#pragma once
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <map>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <stb_image/stb_image.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -14,6 +13,7 @@
 
 unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false)
 {
+
 	std::string filename(path);
 	filename = directory + '/' + filename;
 
@@ -21,10 +21,11 @@ unsigned int TextureFromFile(const char* path, const std::string& directory, boo
 	glGenTextures(1, &textureID);
 
 	int width, height, nrComponents;
+	stbi_set_flip_vertically_on_load(1);
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
 	{
-		GLenum format;
+		GLenum format{};
 		if (nrComponents == 1)
 			format = GL_RED;
 		else if (nrComponents == 3)
@@ -65,7 +66,6 @@ public:
 	{
 		loadModel(path);
 	}
-
 	void Draw(Shader& shader)
 	{
 		for (unsigned int i = 0; i < meshes.size(); i++)
@@ -85,7 +85,6 @@ private:
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 	}
-
 	void processNode(aiNode* node, const aiScene* scene)
 	{
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -97,9 +96,7 @@ private:
 		{
 			processNode(node->mChildren[i], scene);
 		}
-
 	}
-
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Vertex> vertices;
@@ -108,8 +105,8 @@ private:
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
-			Vertex vertex;
-			glm::vec3 vector;
+			Vertex vertex{};
+			glm::vec3 vector{};
 
 			vector.x = mesh->mVertices[i].x;
 			vector.y = mesh->mVertices[i].y;
@@ -124,9 +121,9 @@ private:
 				vertex.Normal = vector;
 			}
 
-			if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+			if (mesh->mTextureCoords[0])
 			{
-				glm::vec2 vec;
+				glm::vec2 vec{};
 
 				vec.x = mesh->mTextureCoords[0][i].x;
 				vec.y = mesh->mTextureCoords[0][i].y;
@@ -156,8 +153,6 @@ private:
 				indices.push_back(face.mIndices[j]);
 		}
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-
 		std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");

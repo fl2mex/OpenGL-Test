@@ -156,8 +156,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\vendor\GLM\detail\glm.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui.cpp" />
     <ClCompile Include="src\vendor\ImGui\imgui_demo.cpp" />
@@ -341,6 +339,7 @@
     <ClInclude Include="Dependencies\GLEW\include\GL\wglew.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="src\MainLoop.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
@@ -664,8 +663,6 @@
     <None Include="Dependencies\assimp\include\SmoothingGroups.inl" />
     <None Include="Dependencies\assimp\include\vector2.inl" />
     <None Include="Dependencies\assimp\include\vector3.inl" />
-    <None Include="res\shader\cubefragment.glsl" />
-    <None Include="res\shader\cubevertex.glsl" />
     <None Include="res\shader\fragment.glsl" />
     <None Include="res\shader\vertex.glsl" />
     <None Include="src\vendor\GLM\detail\func_common.inl" />
@@ -806,10 +803,11 @@
     <None Include="src\vendor\GLM\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\texture\container.png" />
-    <Image Include="res\texture\container_specular.png" />
-    <Image Include="res\texture\dreamed.jpg" />
-    <Image Include="res\texture\kitty.png" />
+    <Image Include="res\model\ao.jpg" />
+    <Image Include="res\model\diffuse.jpg" />
+    <Image Include="res\model\normal.png" />
+    <Image Include="res\model\roughness.jpg" />
+    <Image Include="res\model\specular.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
