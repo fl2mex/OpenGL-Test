@@ -86,13 +86,18 @@ public:
 	App() // Constructor, no need for init call
 	{
 		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);	// Set OpenGL Version to 3.3
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Set OpenGL Version to 3.3
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		window = glfwCreateWindow(screenWidth, screenHeight, "App", NULL, NULL);
 		glfwMakeContextCurrent(window);
-		glEnable(GL_DEPTH_TEST);						// Enable Z-Buffer
-		glfwSwapInterval(1);							// Enable VSync
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Set Blending Function
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glFrontFace(GL_CW);
+		glfwSwapInterval(1); // Enable VSync
 		glewInit();
 
 		// Callbacks
@@ -102,10 +107,10 @@ public:
 		glfwSetScrollCallback(window, scrollCallback);
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		ImGui::CreateContext();							// Create ImGui Context
-		ImGui_ImplGlfw_InitForOpenGL(window, true);		// Initialize ImGui
+		ImGui::CreateContext(); // Create ImGui Context
+		ImGui_ImplGlfw_InitForOpenGL(window, true); // Initialize ImGui
 		ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
-		ImGui::StyleColorsDark();						// Set ImGui Style to Dark
+		ImGui::StyleColorsDark(); // Set ImGui Style to Dark
 	}
 	~App() // Destructor, no need for cleanup call
 	{

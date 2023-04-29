@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <map>
 
 #include <stb_image/stb_image.h>
 #include <assimp/Importer.hpp>
@@ -13,10 +12,8 @@
 
 unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false)
 {
-
 	std::string filename(path);
 	filename = directory + '/' + filename;
-
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 

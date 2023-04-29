@@ -1,6 +1,6 @@
 #include "MainLoop.h"
 
-int main(void)
+int main()
 {
 	App app;
 	app.Run();
