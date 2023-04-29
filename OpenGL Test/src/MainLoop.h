@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+#include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
 

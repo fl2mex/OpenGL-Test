@@ -344,6 +344,7 @@
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\vendor\GLM\common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\GLM\detail\compute_vector_relational.hpp" />
