@@ -1,4 +1,7 @@
 #pragma once
+#include <GL/glew.h>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 
