@@ -98,7 +98,7 @@ public:
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);
-		glfwSwapInterval(1); // Enable VSync
+		//glfwSwapInterval(1); // Enable VSync
 		glewInit();
 
 		// Callbacks
@@ -130,6 +130,22 @@ public:
 			float currentFrame = static_cast<float>(glfwGetTime());
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
+
+			
+				m_CurrentTime = glfwGetTime();
+				double deltaTime = m_CurrentTime - m_LastTime;
+
+				if (deltaTime >= 1)
+				{
+					int fps = std::max(1, int(m_NumFrames / deltaTime));
+					std::stringstream title; title << "OpenGL App - Running at " << fps << "FPS";
+					glfwSetWindowTitle(window, title.str().c_str());
+					m_LastTime = m_CurrentTime;
+					m_NumFrames = -1;
+					m_FrameTime = 1000.0f / fps;
+				}
+				m_NumFrames++;
+			
 
 			// Render
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -165,4 +181,8 @@ public:
 	}
 private:
 	GLFWwindow* window;
+
+	double m_LastTime, m_CurrentTime;
+	int m_NumFrames;
+	float m_FrameTime;
 };

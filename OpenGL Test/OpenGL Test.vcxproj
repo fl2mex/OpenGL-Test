@@ -664,6 +664,7 @@
     <None Include="Dependencies\assimp\include\SmoothingGroups.inl" />
     <None Include="Dependencies\assimp\include\vector2.inl" />
     <None Include="Dependencies\assimp\include\vector3.inl" />
+    <None Include="res\model\backpack.mtl" />
     <None Include="res\shader\fragment.glsl" />
     <None Include="res\shader\vertex.glsl" />
     <None Include="src\vendor\GLM\detail\func_common.inl" />
@@ -809,6 +810,9 @@
     <Image Include="res\model\normal.png" />
     <Image Include="res\model\roughness.jpg" />
     <Image Include="res\model\specular.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="res\model\backpack.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

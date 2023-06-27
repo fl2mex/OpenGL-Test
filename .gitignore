@@ -5,7 +5,8 @@
 *.slo
 *.lo
 *.o
-*.obj
+# we gotta include .obj files, the 3d models!!!
+# *.obj
 
 # Precompiled Headers
 *.gch
