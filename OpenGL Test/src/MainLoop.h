@@ -182,7 +182,7 @@ public:
 private:
 	GLFWwindow* window;
 
-	double m_LastTime, m_CurrentTime;
-	int m_NumFrames;
-	float m_FrameTime;
+	double m_LastTime = 0, m_CurrentTime = 0;
+	int m_NumFrames = 0;
+	float m_FrameTime = 0;
 };

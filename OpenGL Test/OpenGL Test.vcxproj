@@ -811,9 +811,6 @@
     <Image Include="res\model\roughness.jpg" />
     <Image Include="res\model\specular.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="res\model\backpack.obj" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
